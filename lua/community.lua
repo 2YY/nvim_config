@@ -10,6 +10,7 @@ return {
   { import = "astrocommunity.editing-support.neogen" },
   { import = "astrocommunity.editing-support.treesj"},
   { import = "astrocommunity.git.diffview-nvim" },
+  { import = "astrocommunity.git.octo-nvim" },
   { import = "astrocommunity.motion.marks-nvim" },
   { import = "astrocommunity.pack.bash" },
   { import = "astrocommunity.pack.docker" },

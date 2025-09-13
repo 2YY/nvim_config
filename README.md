@@ -1,34 +1,23 @@
-# AstroNvim Template
+# Neovim 設定
 
-**NOTE:** This is for AstroNvim v4+
+## TODO
 
-A template for getting started with [AstroNvim](https://github.com/AstroNvim/AstroNvim)
+- 補完
+- テスト
+- (デバッガ)
 
-## 🛠️ Installation
+## 構成
 
-#### Make a backup of your current nvim and shared folder
+### プラグインマネージャー
 
-```shell
-mv ~/.config/nvim ~/.config/nvim.bak
-mv ~/.local/share/nvim ~/.local/share/nvim.bak
-mv ~/.local/state/nvim ~/.local/state/nvim.bak
-mv ~/.cache/nvim ~/.cache/nvim.bak
-```
+- [folke/lazy.nvim](https://github.com/folke/lazy.nvim)
+  - [Structured Setup](https://lazy.folke.io/installation) を採用。
+  - `lua/plugins` ディレクトリ配下に、インストールしたいプラグインのリストを記述する。
+    - プラグインをカテゴリに分けて、カテゴリ毎にファイルを分割して記述する。(後で何がどこに有るか探しやすい)
+  - 新規追加したものをインストールや、バージョンアップしたい時は、`:Lazy update` を実行。
+  - プラグインの設定から何か削除した時は、`:Lazy clean` で、使わなくなったプラグインのファイルをローカルから削除できる。
 
-#### Create a new user repository from this template
+### LSP・リンター
 
-Press the "Use this template" button above to create a new repository to store your user configuration.
-
-You can also just clone this repository directly if you do not want to track your user configuration in GitHub.
-
-#### Clone the repository
-
-```shell
-git clone https://github.com/2YY/astronvim_config ~/.config/nvim
-```
-
-#### Start Neovim
-
-```shell
-nvim
-```
+- [mason-org/mason.nvim](https://github.com/mason-org/mason.nvim)
+  - [mason-org/mason.nvim](https://github.com/mason-org/mason-lspconfig.nvim) で、事前に必ずインストールしておきたいものを設定出来るようにしている。(`lua/plugins/lsp.lua`)

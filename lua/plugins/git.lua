@@ -59,6 +59,9 @@ return {
     event = { "BufReadPre", "BufNewFile" },
     init = function()
       vim.opt.updatetime = 100
+    end,
+    config = function()
+      vim.g.signify_sign_change = '~'
     end
   }
 }

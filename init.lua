@@ -8,6 +8,3 @@ require('config.old_files')
 require('config.quickfix')
 require('config.window')
 
-require("nvim-treesitter.configs").setup({
-  highlight = { enable = true },
-})

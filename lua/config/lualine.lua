@@ -17,6 +17,21 @@ local colors = {
   magenta  = '#c678dd',
   blue     = '#51afef',
   red      = '#ec5f67',
+  white    = '#ffffff'
+}
+local colors_inactive = {
+  bg       = '#25292f',
+  fg       = '#60656f',
+  yellow   = '#73644f',
+  cyan     = '#194c51',
+  darkblue = '#1c2434',
+  green    = '#536447',
+  orange   = '#7a4f20',
+  violet   = '#595976',
+  magenta  = '#644975',
+  blue     = '#385e7b',
+  red      = '#733f47',
+  white    = '#7a7d82'
 }
 
 local conditions = {
@@ -72,123 +87,170 @@ local config = {
 local function ins_left(component)
   table.insert(config.sections.lualine_c, component)
 end
+local function ins_left_inactive(component)
+  table.insert(config.inactive_sections.lualine_c, component)
+end
 
 -- Inserts a component in lualine_x at right section
 local function ins_right(component)
   table.insert(config.sections.lualine_x, component)
 end
+local function ins_right_inactive(component)
+  table.insert(config.inactive_sections.lualine_x, component)
+end
 
--- ins_left {
---   function()
---     return '▊'
---   end,
---   color = { fg = colors.blue }, -- Sets highlighting of component
---   padding = { left = 0, right = 1 }, -- We don't need space before this
--- }
-
-ins_left {
-  -- filesize component
-  'filesize',
-  cond = conditions.buffer_not_empty,
-}
-
-ins_left { 'location' }
-
-ins_left { 'progress', color = { fg = colors.fg, gui = 'bold' } }
-
-ins_left {
-  'diagnostics',
-  sources = { 'nvim_diagnostic' },
-  symbols = { error = ' ', warn = ' ', info = ' ' },
-  diagnostics_color = {
-    error = { fg = colors.red },
-    warn = { fg = colors.yellow },
-    info = { fg = colors.cyan },
-  },
-}
-
-ins_left {
-  function()
-    local reg = vim.fn.reg_recording()
-    if reg == "" then return "" end -- NOTE: マクロの記録中じゃない時は空文字にして非表示。
-    return "󰑋 " .. reg
-  end,
-  color = { fg = colors.red },
-}
-
--- Insert mid section. You can make any number of sections in neovim :)
--- for lualine it's any number greater then 2
-ins_left {
+local function fileSizeComponent(color)
+  return {
+    -- filesize component
+    'filesize',
+    cond = conditions.buffer_not_empty,
+    color = { fg = color, gui = 'bold' }
+  }
+end
+local function locationComponent(color)
+  return {
+    'location',
+    color = { fg = color }
+  }
+end
+-- local progressComponent = { 'progress', color = { fg = colors.fg, gui = 'bold' } }
+local function progressComponent(color)
+  return {
+    'progress',
+    color = { fg = color, gui = 'bold' }
+  }
+end
+local function diagnosticsComponent(color_error, color_warn, color_info)
+  return {
+    'diagnostics',
+    sources = { 'nvim_diagnostic' },
+    symbols = { error = ' ', warn = ' ', info = ' ' },
+    diagnostics_color = {
+      error = { fg = color_error },
+      warn = { fg = color_warn },
+      info = { fg = color_info },
+    },
+  }
+end
+local function recordingComponent(color)
+  return {
+    function()
+      local reg = vim.fn.reg_recording()
+      if reg == "" then return "" end -- NOTE: マクロの記録中じゃない時は空文字にして非表示。
+      return "󰑋 " .. reg
+    end,
+    color = { fg = color },
+  }
+end
+local spacerComponent = {
+  -- Insert mid section. You can make any number of sections in neovim :)
+  -- for lualine it's any number greater then 2
   function()
     return '%='
-  end,
+  end
 }
-
-ins_left {
-  'filename',
-  cond = conditions.buffer_not_empty,
-  color = { fg = '#ffffff', gui = 'bold' },
-}
-
-ins_right {
-  -- Lsp server name .
-  function()
-    local msg = 'No Active Lsp'
-    local buf_ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
-    local clients = vim.lsp.get_clients()
-    if next(clients) == nil then
-      return msg
-    end
-    for _, client in ipairs(clients) do
-      local filetypes = client.config.filetypes
-      if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-        return client.name
+local function fileNameComponent(color)
+  return {
+    'filename',
+    cond = conditions.buffer_not_empty,
+    color = { fg = color, gui = 'bold' },
+  }
+end
+local function lspServerNameComponent(color)
+  return {
+    function()
+      local msg = 'No Active Lsp'
+      local buf_ft = vim.api.nvim_get_option_value('filetype', { buf = 0 })
+      local clients = vim.lsp.get_clients()
+      if next(clients) == nil then
+        return msg
       end
-    end
-    return msg
-  end,
-  icon = ' LSP:',
-  color = { fg = '#ffffff', gui = 'bold' },
-}
+      for _, client in ipairs(clients) do
+        local filetypes = client.config.filetypes
+        if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+          return client.name
+        end
+      end
+      return msg
+    end,
+    icon = ' LSP:',
+    color = { fg = color, gui = 'bold' },
+  }
+end
+local function fileTypeComponent(color)
+  return {
+    'filetype',
+    cond = conditions.hide_in_width,
+    color = { fg = color, gui = 'bold' },
+  }
+end
+local function encodingComponent(color)
+  return {
+    'o:encoding', -- option component same as &encoding in viml
+    fmt = string.upper, -- I'm not sure why it's upper case either ;)
+    cond = conditions.hide_in_width,
+    color = { fg = color, gui = 'bold' },
+  }
+end
+local function fileFormatComponent(color)
+  return {
+    'fileformat',
+    symbols = { unix = "LF", dos = "CRLF", mac = "CR" },
+    fmt = string.upper,
+    color = { fg = color, gui = 'bold' },
+  }
+end
 
-ins_right {
-  'filetype',
-  cond = conditions.hide_in_width,
-  color = { fg = colors.fg, gui = 'bold' },
-}
+-- NOTE: ウィンドウのフォーカスが消えたときに非表示になってガタツキが発生し気になるので、やむなく今は使っていない。
+local function branchComponent(color)
+  return {
+    'branch',
+    icon = '',
+    color = { fg = color, gui = 'bold' },
+  }
+end
 
--- Add components to right sections
-ins_right {
-  'o:encoding', -- option component same as &encoding in viml
-  fmt = string.upper, -- I'm not sure why it's upper case either ;)
-  cond = conditions.hide_in_width,
-  color = { fg = colors.green, gui = 'bold' },
-}
-
-ins_right {
-  'fileformat',
-  fmt = string.upper,
-  icons_enabled = false, -- I think icons are cool but Eviline doesn't have them. sigh
-  color = { fg = colors.green, gui = 'bold' },
-}
-
-ins_right {
-  'branch',
-  icon = '',
-  color = { fg = colors.violet, gui = 'bold' },
-}
-
-ins_right {
-  'diff',
-  -- Is it me or the symbol for modified us really weird
-  symbols = { added = ' ', modified = '󰝤 ', removed = ' ' },
-  diff_color = {
-    added = { fg = colors.green },
-    modified = { fg = colors.orange },
-    removed = { fg = colors.red },
+local function diffComponent(color_added, color_modified, color_removed)
+  return {
+    'diff',
+    -- Is it me or the symbol for modified us really weird
+    symbols = { added = ' ', modified = '󰝤 ', removed = ' ' },
+    diff_color = {
+    added = { fg = color_added },
+    modified = { fg = color_modified },
+    removed = { fg = color_removed },
   },
   cond = conditions.hide_in_width,
-}
+  }
+end
+
+ins_left(fileSizeComponent(colors.fg))
+ins_left(locationComponent(colors.fg))
+ins_left(progressComponent(colors.fg))
+ins_left(diagnosticsComponent(colors.red, colors.yellow, colors.cyan))
+ins_left(recordingComponent(colors.red))
+ins_left(spacerComponent)
+ins_left(fileNameComponent(colors.white))
+ins_right(lspServerNameComponent(colors.white))
+ins_right(fileTypeComponent(colors.fg))
+ins_right(encodingComponent(colors.green))
+ins_right(fileFormatComponent(colors.green))
+-- ins_right(branchComponent(colors.violet))
+ins_right(diffComponent(colors.green, colors.orange, colors.red))
+
+ins_left_inactive(fileSizeComponent(colors_inactive.fg))
+ins_left_inactive(locationComponent(colors_inactive.fg))
+ins_left_inactive(progressComponent(colors_inactive.fg))
+ins_left_inactive(diagnosticsComponent(colors_inactive.red, colors_inactive.yellow, colors_inactive.cyan))
+ins_left_inactive(spacerComponent)
+ins_left_inactive(fileNameComponent(colors_inactive.white))
+ins_right_inactive(lspServerNameComponent(colors_inactive.white))
+ins_right_inactive(fileTypeComponent(colors_inactive.fg))
+ins_right_inactive(encodingComponent(colors_inactive.green))
+ins_right_inactive(fileFormatComponent(colors_inactive.green))
+-- ins_right_inactive(branchComponent(colors_inactive.violet))
+ins_right_inactive(diffComponent(colors_inactive.green, colors_inactive.orange, colors_inactive.red))
 
 -- Now don't forget to initialize lualine
 lualine.setup(config)
+

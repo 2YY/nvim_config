@@ -9,7 +9,6 @@ return {
       }
     end,
     keys = {
-      { "<Esc>", [[<C-\><C-n>]], mode = "t", silent = true, desc = "Terminal: exit to normal" },
       {
         "<leader>tv",
         function()

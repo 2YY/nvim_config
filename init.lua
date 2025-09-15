@@ -6,5 +6,7 @@ require('config.lualine')
 require('config.mark')
 require('config.old_files')
 require('config.quickfix')
+require('config.terminal')
 require('config.window')
+
 

@@ -1,5 +1,6 @@
 require('config.buffer')
 require('config.grep')
+require('config.indent')
 require('config.lazy')
 require('config.line_number')
 require('config.lualine')
@@ -8,5 +9,4 @@ require('config.old_files')
 require('config.quickfix')
 require('config.terminal')
 require('config.window')
-
 

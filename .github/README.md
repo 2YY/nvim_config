@@ -1,10 +1,10 @@
-# Nvim User Configuration
+# Neovim User Configuration
 
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/2YY/astronvim_config/main?style=for-the-badge&logo=github&logoColor=FFFFFF&color=AAC4FF)
 ![GitHub repo size](https://img.shields.io/github/repo-size/2YY/astronvim_config?style=for-the-badge&logo=dropbox&logoColor=FFFFFF&color=D2DAFF)
 ![GitHub License](https://img.shields.io/github/license/2YY/astronvim_config?style=for-the-badge&logo=powerpages&logoColor=FFFFFF&color=EEF1FF)
 
-A user configuration template for [Nvim]([https://github.com/AstroNvim/AstroNvim](https://neovim.io/)).
+A user configuration template for [Neovim](https://neovim.io/).
 
 ## 🛠️ Installation
 

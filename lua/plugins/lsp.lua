@@ -4,7 +4,7 @@ return {
   {
     "mason-org/mason-lspconfig.nvim",
     opts = {
-      ensure_installed = { "lua_ls", "vtsls" },
+      ensure_installed = { "elixir", "lua_ls", "vtsls" },
     },
     dependencies = {
       { "mason-org/mason.nvim", opts = {} },
